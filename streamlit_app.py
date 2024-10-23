@@ -8,7 +8,6 @@ import joblib
 
 @st.cache_data
 def load_data():
-    # Substitua pela URL bruta do seu repositório
     train_url = "https://raw.githubusercontent.com/ViniciusTelesProgramador/Previsao_de_precos_casas/main/kc_house_data.csv"
     try:
         data = pd.read_csv(train_url, delimiter=',', on_bad_lines='skip', encoding='utf-8')
@@ -32,9 +31,16 @@ def main():
 
         # Gráfico de Correlação
         st.subheader("Gráfico de Correlação")
-        plt.figure(figsize=(12, 8))
-        sns.heatmap(data.corr(), annot=True, cmap='coolwarm', fmt='.2f')
-        st.pyplot(plt)
+
+        # Filtrar apenas colunas numéricas
+        numeric_data = data.select_dtypes(include=['float64', 'int64'])
+        
+        if not numeric_data.empty:
+            plt.figure(figsize=(12, 8))
+            sns.heatmap(numeric_data.corr(), annot=True, cmap='coolwarm', fmt='.2f')
+            st.pyplot(plt)
+        else:
+            st.warning("Não há colunas numéricas suficientes para gerar o gráfico de correlação.")
 
         # Selecione as colunas para o modelo
         features = st.multiselect("Selecione as características para prever o preço:", options=data.columns.tolist())
