@@ -30,12 +30,19 @@ def main():
         # Exibir informações sobre os dados
         st.write("Informações sobre o dataset:")
         st.write(data.info())
-        
+
         # Gráfico de correlação
         st.write("Gráfico de Correlação:")
-        plt.figure(figsize=(10, 6))
-        sns.heatmap(data.corr(), annot=True, cmap='coolwarm', fmt='.2f')
-        st.pyplot(plt)
+        # Filtrar apenas colunas numéricas
+        numeric_data = data.select_dtypes(include='number')
+        
+        # Verificar se há colunas numéricas
+        if not numeric_data.empty:
+            plt.figure(figsize=(10, 6))
+            sns.heatmap(numeric_data.corr(), annot=True, cmap='coolwarm', fmt='.2f')
+            st.pyplot(plt)
+        else:
+            st.warning("Não há colunas numéricas disponíveis para calcular a correlação.")
 
         # Sidebar para configurações
         st.sidebar.title("Configurações do Modelo")
