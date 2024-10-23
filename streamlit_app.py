@@ -5,7 +5,7 @@ from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 import seaborn as sns
 import joblib
-from io import StringIO 
+from io import StringIO  # Importação correta
 
 @st.cache_data
 def load_data():
@@ -81,22 +81,6 @@ def main():
                 plt.title("Previsões vs Valores Reais")
                 plt.plot([y.min(), y.max()], [y.min(), y.max()], color='red', linestyle='--')  # linha de referência
                 st.pyplot(plt)
-
-                # Previsão manual
-                st.subheader("Prever o Preço de uma Nova Casa")
-                input_data = {}
-                for feature in features:
-                    input_data[feature] = st.number_input(f"Informe o valor de {feature}:", min_value=0.0)
-
-                if st.button("Prever Preço da Casa"):
-                    # Criar um DataFrame com as características
-                    input_df = pd.DataFrame(input_data, index=[0])
-
-                    # Fazer a previsão
-                    predicted_price = model.predict(input_df)
-
-                    # Exibir o preço previsto
-                    st.write(f"O preço previsto da casa é: ${predicted_price[0]:,.2f}")
 
 if __name__ == "__main__":
     main()
