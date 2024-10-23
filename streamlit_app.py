@@ -5,7 +5,7 @@ from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 import seaborn as sns
 import joblib
-from io import StringIO  # Importação correta
+from io import StringIO 
 
 @st.cache_data
 def load_data():
