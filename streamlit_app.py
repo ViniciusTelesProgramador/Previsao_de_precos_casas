@@ -7,7 +7,7 @@ from sklearn.metrics import mean_squared_error
 # Função para carregar o dataset
 @st.cache_data
 def load_data():
-    train_url = "https://github.com/Shreyas3108/house-price-prediction/blob/master/kc_house_data.csv"  
+    train_url = "https://github.com/ViniciusTelesProgramador/Previsao_de_precos_casas/blob/main/kc_house_data.csv"  
     # Tenta carregar o CSV especificando o delimitador e ignorando linhas com erros
     try:
         data = pd.read_csv(train_url, delimiter=',', error_bad_lines=False, encoding='utf-8')
