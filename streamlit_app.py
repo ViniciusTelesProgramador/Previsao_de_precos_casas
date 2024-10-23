@@ -10,7 +10,7 @@ from sklearn.preprocessing import LabelEncoder
 # Função para carregar os dados
 @st.cache
 def load_data():
-    train_url = "https://raw.githubusercontent.com/datasets/house-prices/master/data/train.csv"  # Substituir pelo dataset correto
+    train_url = "https://github.com/Shreyas3108/house-price-prediction/blob/master/kc_house_data.csv" 
     data = pd.read_csv(train_url)
     return data
 
