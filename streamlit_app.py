@@ -5,10 +5,10 @@ from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 import seaborn as sns
 import joblib
+from io import StringIO  # Importação correta
 
 @st.cache_data
 def load_data():
-    # Substitua pela URL bruta do seu repositório
     train_url = "https://raw.githubusercontent.com/ViniciusTelesProgramador/Previsao_de_precos_casas/main/kc_house_data.csv"
     try:
         data = pd.read_csv(train_url, delimiter=',', on_bad_lines='skip', encoding='utf-8')
@@ -28,7 +28,7 @@ def main():
 
         # Exibir informações sobre os dados
         st.write("Informações sobre o dataset:")
-        buffer = pd.io.buffer.StringIO()  # Usar StringIO para capturar o output de info()
+        buffer = StringIO()  # Usar StringIO para capturar o output de info()
         data.info(buf=buffer)
         s = buffer.getvalue()
         st.text(s)  # Exibir a informação do dataset
