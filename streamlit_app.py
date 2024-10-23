@@ -1,66 +1,62 @@
-import altair as alt
-import pandas as pd
 import streamlit as st
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+import matplotlib.pyplot as plt
 
-# Show the page title and description.
-st.set_page_config(page_title="Movies dataset", page_icon="🎬")
-st.title("🎬 Movies dataset")
-st.write(
-    """
-    This app visualizes data from [The Movie Database (TMDB)](https://www.kaggle.com/datasets/tmdb/tmdb-movie-metadata).
-    It shows which movie genre performed best at the box office over the years. Just 
-    click on the widgets below to explore!
-    """
-)
-
-
-# Load the data from a CSV. We're caching this so it doesn't reload every time the app
-# reruns (e.g. if the user interacts with the widgets).
+# Função para carregar os dados
 @st.cache_data
 def load_data():
-    df = pd.read_csv("data/movies_genres_summary.csv")
-    return df
+    # Substituir pelo seu arquivo de dados
+    data = pd.read_csv('house_prices.csv')
+    return data
 
+# Chamar a função para carregar os dados
+data = load_data()
 
-df = load_data()
+# Título e descrição da aplicação
+st.title('Previsão de Preços de Casas')
+st.write("Este protótipo prevê o preço de uma casa com base em suas características.")
+st.write("Visualização do conjunto de dados:")
+st.dataframe(data.head())
 
-# Show a multiselect widget with the genres using `st.multiselect`.
-genres = st.multiselect(
-    "Genres",
-    df.genre.unique(),
-    ["Action", "Adventure", "Biography", "Comedy", "Drama", "Horror"],
-)
+# Selecionar características e alvo (preço)
+X = data[['area', 'bedrooms', 'bathrooms', 'location']]  # Características
+y = data['price']  # Preço da casa (alvo)
 
-# Show a slider widget with the years using `st.slider`.
-years = st.slider("Years", 1986, 2006, (2000, 2016))
+# Dividir os dados em treino e teste
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Filter the dataframe based on the widget input and reshape it.
-df_filtered = df[(df["genre"].isin(genres)) & (df["year"].between(years[0], years[1]))]
-df_reshaped = df_filtered.pivot_table(
-    index="year", columns="genre", values="gross", aggfunc="sum", fill_value=0
-)
-df_reshaped = df_reshaped.sort_values(by="year", ascending=False)
+# Treinar o modelo
+model = LinearRegression()
+model.fit(X_train, y_train)
 
+# Prever no conjunto de teste
+y_pred = model.predict(X_test)
 
-# Display the data as a table using `st.dataframe`.
-st.dataframe(
-    df_reshaped,
-    use_container_width=True,
-    column_config={"year": st.column_config.TextColumn("Year")},
-)
+# Calcular o erro quadrático médio (RMSE)
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+st.write(f"Erro quadrático médio (RMSE): {rmse:.2f}")
 
-# Display the data as an Altair chart using `st.altair_chart`.
-df_chart = pd.melt(
-    df_reshaped.reset_index(), id_vars="year", var_name="genre", value_name="gross"
-)
-chart = (
-    alt.Chart(df_chart)
-    .mark_line()
-    .encode(
-        x=alt.X("year:N", title="Year"),
-        y=alt.Y("gross:Q", title="Gross earnings ($)"),
-        color="genre:N",
-    )
-    .properties(height=320)
-)
-st.altair_chart(chart, use_container_width=True)
+# Coletar dados do usuário para previsão
+st.sidebar.header('Insira as características da casa')
+area = st.sidebar.number_input('Área (em metros quadrados)', min_value=20, max_value=1000, value=100)
+bedrooms = st.sidebar.number_input('Número de quartos', min_value=1, max_value=10, value=2)
+bathrooms = st.sidebar.number_input('Número de banheiros', min_value=1, max_value=10, value=1)
+location = st.sidebar.selectbox('Localização', ('Centro', 'Subúrbio', 'Periferia'))
+
+# Fazer a previsão
+input_data = pd.DataFrame([[area, bedrooms, bathrooms, location]], columns=['area', 'bedrooms', 'bathrooms', 'location'])
+predicted_price = model.predict(input_data)
+
+st.sidebar.write(f"Preço estimado: R$ {predicted_price[0]:,.2f}")
+
+# Visualizações
+st.write("Relação entre área e preço:")
+plt.figure(figsize=(8, 6))
+plt.scatter(data['area'], data['price'], alpha=0.5)
+plt.xlabel('Área (m²)')
+plt.ylabel('Preço (R$)')
+st.pyplot(plt)
