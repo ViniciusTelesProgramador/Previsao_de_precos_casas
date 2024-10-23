@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 @st.cache_data
 def load_data():
     # Substitua pela URL bruta do seu repositório
-    train_url = "https://raw.githubusercontent.com/usuario/repo/branch/nome_do_arquivo.csv"
+    train_url = "https://github.com/ViniciusTelesProgramador/Previsao_de_precos_casas/blob/main/kc_house_data.csv"
     try:
         data = pd.read_csv(train_url, delimiter=',', on_bad_lines='skip', encoding='utf-8')
         return data
