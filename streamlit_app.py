@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 @st.cache_data
 def load_data():
     # Substitua pela URL bruta do seu repositório
-    train_url = "https://github.com/ViniciusTelesProgramador/Previsao_de_precos_casas/blob/main/kc_house_data.csv"
+    train_url = "https://raw.githubusercontent.com/ViniciusTelesProgramador/Previsao_de_precos_casas/main/kc_house_data.csv"
     try:
         data = pd.read_csv(train_url, delimiter=',', on_bad_lines='skip', encoding='utf-8')
         return data
@@ -30,7 +30,7 @@ def main():
 
         # Selecione as colunas para o modelo
         features = st.multiselect("Selecione as características para prever o preço:", options=data.columns.tolist())
-        target = st.selectbox("Selecione a variável alvo (preço):", options=['price'])
+        target = 'price'  # Variável alvo definida como 'price'
 
         if st.button("Treinar Modelo"):
             if len(features) > 0:
