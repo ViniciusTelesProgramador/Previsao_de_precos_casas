@@ -5,7 +5,7 @@ from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 import seaborn as sns
 import joblib
-from io import StringIO  # Importação correta
+from io import StringIO  
 
 @st.cache_data
 def load_data():
@@ -19,6 +19,11 @@ def load_data():
 
 def main():
     st.title("Previsão de Preços de Casas")
+
+    st.write("""
+    Este aplicativo permite prever o preço de casas com base em diversas características.
+    Você pode selecionar quais características usar para treinar o modelo e visualizar os resultados das previsões.
+    """)
 
     # Carregar os dados
     data = load_data()
@@ -35,6 +40,10 @@ def main():
 
         # Gráfico de Correlação
         st.subheader("Gráfico de Correlação")
+        st.write("""
+        O gráfico de correlação mostra como as diferentes características do dataset se relacionam entre si.
+        Valores próximos a 1 ou -1 indicam uma forte correlação positiva ou negativa, respectivamente.
+        """)
 
         # Filtrar apenas colunas numéricas
         numeric_data = data.select_dtypes(include=['float64', 'int64'])
@@ -47,6 +56,11 @@ def main():
             st.warning("Não há colunas numéricas suficientes para gerar o gráfico de correlação.")
 
         # Selecione as colunas para o modelo
+        st.subheader("Seleção de Características")
+        st.write("""
+        Selecione as características (colunas) que você deseja usar para prever o preço das casas.
+        Você pode escolher várias características, e o modelo irá utilizá-las para treinar a previsão.
+        """)
         features = st.multiselect("Selecione as características para prever o preço:", options=data.columns.tolist())
         target = st.selectbox("Selecione a variável alvo (preço):", options=['price'])
 
@@ -67,6 +81,11 @@ def main():
 
                 # Exibir os coeficientes do modelo
                 st.write("Coeficientes do Modelo:")
+                st.write("""
+                Os coeficientes indicam a influência de cada característica no preço previsto.
+                Um coeficiente positivo significa que um aumento nessa característica tende a aumentar o preço,
+                enquanto um coeficiente negativo indica que um aumento tende a diminuir o preço.
+                """)
                 for feature, coef in zip(features, model.coef_):
                     st.write(f"{feature}: {coef}")
 
